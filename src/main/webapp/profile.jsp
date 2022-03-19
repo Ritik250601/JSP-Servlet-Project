@@ -129,9 +129,9 @@ if (user == null) {
 
 
 					<!-- categories -->
-					<ul class="list-group mt-4">
-						<li class="list-group-item active" aria-current="true">All
-							Posts</li>
+					 <a href="#" onclick="posts(0, this)"  class=" c-link list-group-item list-group-item-action active">
+                                All Posts
+                            </a>
 
 						<%
 						PostDao pd = new PostDao(ConnectionProvider.getConnection());
@@ -140,29 +140,27 @@ if (user == null) {
 						for (Category cat : lst2) {
 						%>
 
-						<li class="list-group-item"><%=cat.getName()%></li>
+						<a href="#" onclick="posts(<%=cat.getcId()%>, this)"
+							class=" c-link list-group-item list-group-item-action"><%=cat.getName()%></a>
 
 
 						<%
 						}
 						%>
 
-					</ul>
 
 				</div>
 
 
 				<!-- second col -->
-				<div class="col-md-8" >
+				<div class="col-md-8">
 					<!-- posts -->
 					<div class="container text-center" id="loader">
 						<i class="fa fa-refresh fa-4x fa-spin"></i>
 						<h3 class="mt-2">Loading...</h3>
 
 					</div>
-					<div class="container-fluid" id="post-container">
-					
-					</div>
+					<div class="container-fluid" id="post-container"></div>
 
 
 				</div>
@@ -476,22 +474,38 @@ if (user == null) {
 											})
 						})
 	</script>
-	
+
 	<script>
 	//loadig post using ajax
-	$(document).ready(function(e) {
-		
-	$.ajax({
-		url:"load_posts.jsp",
-		success: function(data, p2, p3){
-			console.log(data);
-			$('#loader').hide();
-			$("#post-container").html(data);
-		}
-	    
-	})
-		
-	})
+	
+	
+	  const posts =  (catId, temp) => {
+                $("#loader").show();
+                 $("#post-container").hide()
+                 $(".c-link").removeClass('active')
+                console.log("working", catId)
+                $.ajax({
+                    url: "load_posts.jsp",
+                    data: {cid: catId},
+                    success: function (data, textStatus, jqXHR) {
+                        console.log(data);
+                         $("#loader").hide();
+                        $("#post-container").show();
+                        $('#post-container').html(data)
+                       $(temp).addClass('active')
+                    }
+                })
+            }
+
+	  
+	   $(document).ready(function() {
+		   let allPostRef = $('.c-link')[0]
+		   posts(0, allPostRef);
+		   
+	   })
+	   
+	
+	
 	
 	
 	

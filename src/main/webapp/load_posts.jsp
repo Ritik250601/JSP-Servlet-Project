@@ -1,4 +1,5 @@
 
+<%@page import="java.util.stream.Collectors"%>
 <%@page import="java.io.File"%>
 <%@page import="com.tech.blog.entities.Post"%>
 <%@page import="java.util.List"%>
@@ -8,11 +9,17 @@
 <div class="row">
 <% 
 PostDao pd = new PostDao(ConnectionProvider.getConnection());
-List<Post> post = pd.getAllPosts();
-// String path = request.getRealPath("/") + "blog_pics" + File.separator;
-//String contextPath = request.getContextPath();
-//String path = contextPath + "/src/main/webapp/blog_pics";
+List<Post> allPost = pd.getAllPosts();
+List <Post> post;
 
+int cid = Integer.parseInt(request.getParameter("cid"));
+if(cid == 0){
+post = allPost;	
+}
+else{
+post = allPost.stream().filter(e -> e.getCatId() == cid).collect(Collectors.toList());	
+	
+}
 
 
 for(Post p : post){
